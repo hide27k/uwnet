@@ -14,7 +14,6 @@ typedef enum{LINEAR, LOGISTIC, RELU, LRELU, SOFTMAX} ACTIVATION;
 
 typedef struct layer {
     matrix *x;
-    matrix *y;
 
     // Weights
     matrix w;

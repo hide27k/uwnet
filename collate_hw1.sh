@@ -14,7 +14,7 @@ prepare src/maxpool_layer.c
 prepare tryhw1.py
 prepare hw1.ipynb
 
-tar cvzf submit.tar.gz submit
+tar cvzf hw1.tar.gz submit
 rm -rf submit/
 echo "Done. Please upload submit.tar.gz to Canvas."
 

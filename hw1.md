@@ -4,8 +4,6 @@ Welcome friends,
 
 For the second assignment we'll be implementing two core building blocks to deep learning, convolutional layers and maxpooling layers.
 
-You'll have to copy over your answers from the previous assignment, `matrix.c`, `activations.c`, and `connected_layer.c`.
-
 ## 5. Convolutions ##
 
 In this homework we will implement convolutional layers using the `im2col` method. This technique is not optimal for every situation but it is a simple way to get very efficient convolutions both on CPU and GPU. One downside is that it can only process images one at a time, so we don't get any extra benefit from batch processing. That's fine though. Open up `convolutional_layer.c` and let's get started!
@@ -46,25 +44,25 @@ The backward method will be similar to forward. Even though the window size may 
 
 ## Experiments With Convnets! ##
 
-There are several examples of convnet architectures in `trycifar.py` and `trymnist.py`. Try them out and try a few of your own!
+There is an example of a convnet architecture in `tryhw1.py`. Try it out and try a few of your own!
 
-Now, for the unmodified convnet architecture in `trycifar.py`, calculate how many operations it takes to process one forward pass through the network. You only need to worry about the matrix operations since everything else is pretty small compared to them.
+Now, for the unmodified convnet architecture in `tryhw1.py`, calculate how many operations it takes to process one forward pass through the network. You only need to worry about the matrix operations since everything else is pretty small compared to them.
 
 Let's assume that we have fused multiply-adds so a matrix multiplication of a `M x K` matrix with a `K x N` matrix takes `M*K*N` operations. How many operations does the convnet use during a forward pass?
 
-Design a fully-connected network that uses the same number of operations and has the same number of layers. Now train this network on CIFAR. What are the comparative accuracies of the two networks? Do convolutions work better than fully-connected layers? Why do you think in this case you see the results you do, what indicators do you have? Put your network configuration and answers to these questions in `trycifar.py`.
+Design a fully-connected network that uses the same number of operations and has the same number of layers. Now train this network on CIFAR. What are the comparative accuracies of the two networks? Do convolutions work better than fully-connected layers? Why do you think in this case you see the results you do, what indicators do you have? Put your network configuration and answers to these questions in `tryhw1.py`.
 
 ## PyTorch Section ##
 
-Upload `homework1_colab.ipynb` to Colab and train some big convolutional networks on real image datasets, like ImageNet! Once you are done with this section make sure you re-download your Python notebook so you can turn it in!
+Upload `hw1.ipynb` to Colab and train some big convolutional networks on real image datasets, like ImageNet! Once you are done with this section make sure you re-download your Python notebook so you can turn it in!
 
 ## Turn it in ##
 
-First run the `collate.sh` script by running:
+First run the `collate_hw1.sh` script by running:
 
-    bash collate.sh
+    bash collate_hw1.sh
     
-This will create the file `submit.tar.gz` in your directory with all the code you need to submit. The command will check to see that your files have changed relative to the version stored in the `git` repository. If it hasn't changed, figure out why, maybe you need to download your ipynb from google?
+This will create the file `hw1.tar.gz` in your directory with all the code you need to submit. The command will check to see that your files have changed relative to the version stored in the `git` repository. If it hasn't changed, figure out why, maybe you need to download your ipynb from google?
 
-Submit `submit.tar.gz` in the file upload field for Homework 1 on Canvas.
+Submit `hw1.tar.gz` in the file upload field for Homework 1 on Canvas.
 

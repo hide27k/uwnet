@@ -27,14 +27,13 @@ class MATRIX(Structure):
                 ("shallow", c_int)]
 
 class DATA(Structure):
-    _fields_ = [("X", MATRIX),
+    _fields_ = [("x", MATRIX),
                 ("y", MATRIX)]
 
 class LAYER(Structure):
     pass
 
 LAYER._fields_ = [("x",  POINTER(MATRIX)),
-                ("y",   POINTER(MATRIX)),
                 ("w", MATRIX),
                 ("dw", MATRIX),
                 ("b", MATRIX),

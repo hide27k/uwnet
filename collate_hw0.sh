@@ -15,7 +15,7 @@ prepare src/connected_layer.c
 prepare tryhw0.py
 prepare hw0.ipynb
 
-tar cvzf submit.tar.gz submit
+tar cvzf hw0.tar.gz submit
 rm -rf submit/
 echo "Done. Please upload submit.tar.gz to Canvas."
 
