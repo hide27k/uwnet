@@ -10,7 +10,7 @@ prepare () {
 
 echo "Creating tarball..."
 prepare src/matrix.c
-prepare src/activations.c
+prepare src/activation_layer.c
 prepare src/connected_layer.c
 prepare tryhw0.py
 prepare hw0.ipynb
