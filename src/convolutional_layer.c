@@ -56,7 +56,7 @@ matrix im2col(image im, int size, int stride)
 
     // TODO: 5.1
     // Fill in the column matrix with patches from the image
-    for (i = 0; i < im.c; i++) {
+    for (i = 0; i < rows; i++) {
         int offw = i % size;
         int offh = (i / size) % size;
         int c = i / size / size;
@@ -65,23 +65,23 @@ matrix im2col(image im, int size, int stride)
                 int ir = offh + j * stride;
                 int ic = offw + k * stride;
                 int index = (i * outh + j) * outw + k;
-                col.data[index] = get_pixel(im, ir, ic, c);
+
+                if (size > 2) {
+                    ir--;
+                    ic--;
+                }
+
+                if (ir < 0 || ic < 0 ||
+                    ir >= im.h || ic >= im.w) {
+                    col.data[index] = 0;
+                } else {
+                    col.data[index] = im.data[ic + im.w * (ir + im.h * c)];
+                }
             }
         }
     }
 
-
     return col;
-}
-
-float get_pixel(image im, int row, int col, int channel) 
-{
-    row -= 1;
-    col -= 1;
-
-    if (row < 0 || col < 0 ||
-        row >= im.h || col >= im.w) return 0;
-    return im.data[col + im.w *(row + im.h * channel)];
 }
 
 // The reverse of im2col, add elements back into image
@@ -100,7 +100,7 @@ image col2im(int width, int height, int channels, matrix col, int size, int stri
 
     // TODO: 5.2
     // Add values into image im from the column matrix
-    for (i = 0; i < im.c; i++) {
+    for (i = 0; i < rows; i++) {
         int offw = i % size;
         int offh = (i / size) % size;
         int c = i / size / size;
@@ -109,24 +109,22 @@ image col2im(int width, int height, int channels, matrix col, int size, int stri
                 int ir = offh + j * stride;
                 int ic = offw + k * stride;
                 int index = (i * outh + j) * outw + k;
-                double val = col.data[index];
-                add_pixel(im, ir, ic, c, val);
+                float val = col.data[index];
+
+                if (size > 2) {
+                    ir--;
+                    ic--;
+                }
+
+                if(ic >= 0 && ic < im.w && ir >= 0 && ir < im.h){
+                    im.data[ic + im.w * (ir + im.h * c)] += val;
+                }
             }
         }
     }
 
 
     return im;
-}
-
-void add_pixel(image im, int row, int col, int c, float val) 
-{
-    row -= 1;
-    col -= 1;
-
-    if (row < 0 || col < 0 ||
-        row >= im.h || col >= im.w) return;
-    im.data[col + im.w * (row + im.h * c)] += val;
 }
 
 // Run a convolutional layer on input
