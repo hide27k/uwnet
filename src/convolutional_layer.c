@@ -56,8 +56,30 @@ matrix im2col(image im, int size, int stride)
 
     // TODO: 5.1
     // Fill in the column matrix with patches from the image
+    for (i = 0; i < rows; i++) {
+        int offw = i % size;
+        int offh = (i / size) % size;
+        int c = i / size / size;
+        for (j = 0; j < outh; j++) {
+            for (k = 0; k < outw; k++) {
+                int ir = offh + j * stride;
+                int ic = offw + k * stride;
+                int index = (i * outh + j) * outw + k;
 
+                if (size > 2) {
+                    ir--;
+                    ic--;
+                }
 
+                if (ir < 0 || ic < 0 ||
+                    ir >= im.h || ic >= im.w) {
+                    col.data[index] = 0;
+                } else {
+                    col.data[index] = im.data[ic + im.w * (ir + im.h * c)];
+                }
+            }
+        }
+    }
 
     return col;
 }
@@ -73,11 +95,33 @@ image col2im(int width, int height, int channels, matrix col, int size, int stri
 
     image im = make_image(width, height, channels);
     int outw = (im.w-1)/stride + 1;
+    int outh = (im.h-1)/stride + 1;
     int rows = im.c*size*size;
 
     // TODO: 5.2
     // Add values into image im from the column matrix
-    
+    for (i = 0; i < rows; i++) {
+        int offw = i % size;
+        int offh = (i / size) % size;
+        int c = i / size / size;
+        for (j = 0; j < outh; j++) {
+            for (k = 0; k < outw; k++) {
+                int ir = offh + j * stride;
+                int ic = offw + k * stride;
+                int index = (i * outh + j) * outw + k;
+                float val = col.data[index];
+
+                if (size > 2) {
+                    ir--;
+                    ic--;
+                }
+
+                if(ic >= 0 && ic < im.w && ir >= 0 && ir < im.h){
+                    im.data[ic + im.w * (ir + im.h * c)] += val;
+                }
+            }
+        }
+    }
 
 
     return im;
@@ -172,6 +216,9 @@ matrix backward_convolutional_layer(layer l, matrix dy)
 void update_convolutional_layer(layer l, float rate, float momentum, float decay)
 {
     // TODO: 5.3
+    axpy_matrix(-decay, l.w, l.dw);
+    axpy_matrix(rate, l.dw, l.w);
+    scal_matrix(momentum, l.dw);
 }
 
 // Make a new convolutional layer
