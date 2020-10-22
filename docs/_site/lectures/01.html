@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Deep Learning - 01 - Machine Learning Review</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  </head>
+  <body>
+    <h1 id="chapter-1-machine-learning-review">Chapter 1: Machine Learning Review</h1>
+
+<p>So what exactly is deep learning, anyway? The phrase is fairly vague and means different things to different people depending on who you talk to. First, though, it’s good to have a basic understanding of typical machine learning tasks and pipelines to understand how deep learning is different.</p>
+
+<h2 id="machine-learning-tasks">Machine Learning Tasks</h2>
+
+<p>Machine learning broadly is the task of modelling data, usually with some kind of numerical or statistical model. The first key distinction between machine learning tasks is between <strong>supervised</strong> and <strong>unsupervised</strong> learning:</p>
+
+<ul>
+  <li><strong>Supervised learning</strong> is function approximation.
+    <ul>
+      <li>Input:
+        <ul>
+          <li>data \(X\)</li>
+          <li>labels \(Y\)</li>
+          <li>paired examples \((x,y)\)</li>
+        </ul>
+      </li>
+      <li>Assume:
+        <ul>
+          <li>there exists a function that maps from data to labels \(f: X \to Y\)</li>
+          <li>our paired examples \((x,y)\) satisfy \(f(x) = y\)</li>
+        </ul>
+      </li>
+      <li>Learn: approximation \(h\) such that \(h(x) \approx f(x)\)</li>
+    </ul>
+  </li>
+  <li><strong>Unsupervised learning</strong> is modelling the distribution of data
+    <ul>
+      <li>Input:
+        <ul>
+          <li>data \(X\)</li>
+        </ul>
+      </li>
+      <li>Learn:
+        <ul>
+          <li><strong>clusters</strong>: groupings of related data points</li>
+          <li>a transformation to a different feature space that preserves relationships between data points</li>
+          <li>a generating function or probability distribution \(g\) such that statistically \(X\) appears to be drawn from \(g\): \(X \sim g\)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="supervised-learning">Supervised Learning</h3>
+
+<p>Supervised learning encompasses algorithms for function approximation. Given a dataset \(X\) and a function \(f\) that takes elements of the dataset and produces output \(y = f(x)\), learn a function \(h\) such that \(h(x) \approx f(x)\).</p>
+
+<figure class="image">
+  <img src="figs/mnist_digits.png" alt="Examples of MNIST digits. A 10x16 grid of handwritten digits, each row is a different digit 0-9." data-attribution="By Josef Steppan - Own work, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=64810040" />
+  <figcaption>Examples digits from the MNIST dataset, 28x28 pixel images of handwritten digits 0-9. MNIST is a common benchmark for computer vision tasks although it is a fairly easy to attain high accuracies.</figcaption>
+</figure>
+
+<p>This “labelling” function \(f\) can be obvious, like trying to predict the price of a car from attributes of the car like the make, model, year, mileage, condition, etc. In this case the true function \(f\) is the process a car salesman goes through to put a price on a car given those attributes. We are trying to create an approximate function \(h\) that takes the same attributes and assigns a similar price.</p>
+
+<p>For some tasks it can be more opaque, like predicting today’s weather from yesterday’s weather. In the case of the weather, there is an underlying physical process but it is not a clear function that only takes as input the past day’s weather. In reality, the weather is determined by a function (the unfolding of the laws of physics) acting on a set of data (the physical conditions of our planet).</p>
+
+<p>In the case of weather prediction, the physical conditions of the planet are what’s known as a <strong>latent variable</strong> or hidden variable. They are not fully observed or recorded but do affect the outcome. Our model can try to account for these variables or simply circumvent them. In either case we are trying to build an approximation of a function that doesn’t actually exist, we simply assume it does. There’s a lot of things like that in machine learning. Don’t let it bother you too much!</p>
+
+<h4 id="classification-vs-regression">Classification vs Regression</h4>
+
+<p>There is often a distinction drawn between <strong>classification</strong> and <strong>regression</strong> tasks in supervised learning:</p>
+
+<ul>
+  <li><strong>Classification</strong>:
+    <ul>
+      <li>labels are discrete classes</li>
+      <li>\(Y \in \mathbb{Z}\)</li>
+      <li>example algorithm: logistic regression</li>
+    </ul>
+  </li>
+  <li><strong>Regression</strong>:
+    <ul>
+      <li>lables are real-valued</li>
+      <li>\(Y \in \mathbb{R}\)</li>
+      <li>example algorithm: linear regression</li>
+    </ul>
+  </li>
+</ul>
+
+<p>It’s pretty confusing that both of those example algorithms have “regression” in their name, huh? There are more complicated or mixed tasks as well that involve predicting both discrete and continuous variables. We’ll worry about those later.</p>
+
+<h3 id="unsupervised-learning">Unsupervised Learning</h3>
+
+<p>In unsupervised learning there are no “labels”, there is only data. Typically unsupervised learning assumes the data is drawn from some statistical distribution or generating function. Tasks in unsupervised learning involve estimating the distribution or function the data is drawn from, learning to represent the data in a different way (usually by transforming the attribute space), or finding groupings of related data points based on the similarity of their attributes.</p>
+
+<h4 id="k-means-clustering">K-means Clustering</h4>
+
+<p><strong>K-means</strong> clustering is a common technique for clustering data based on similarity of attributes. Data points are clustered into groups based on their distance from each other in attribute space according to some metric. The algorithm for K-means is an example of iterative <strong>expectation-maximization (EM)</strong> algorithm for finding a local maximum of a latent-variable model.</p>
+
+<p>The k-means algorithm assumes:</p>
+
+<ul>
+  <li>there are some number (k) of clusters in the data</li>
+  <li>each data point belongs to a cluster
+    <ul>
+      <li>cluster assignments are latent variables, they are not observed</li>
+    </ul>
+  </li>
+  <li>each cluster has a central point, or <strong>centroid</strong></li>
+  <li>data points in a cluster are closer to that cluster’s centroid than to any other cluster’s centroid</li>
+</ul>
+
+<p>First k-means randomly initialzes cluster centroids. Then the algorithm alternates between <strong>expectation</strong> and <strong>maximization</strong> steps:</p>
+
+<p><strong>Expectation</strong>: assign data to clusters based on distance to nearest centroid. Each data point is assigned to the cluster of the nearest centroid by some given distance metric (often, but not always, (L_2) distance.</p>
+
+<p><strong>Maximization</strong>: centroids are updated based on the data that belongs to their cluster. Typically this is done by assigning the centroid to be the mean of the data points assigned to that cluster (hence the “means” in k-means).</p>
+
+<p>K-means clustering can be a useful tool for analyzing data sets, discovering patterns, and leveraging those patterns to accomplish some task. For example, k-means clustering on the color values of pixels in an image separates pixels into clusters based on visual similarity, giving a segmentation mask that groups visually similar elements. These elements may correspond to objects or continuous structures.</p>
+
+<figure class="image">
+  <img src="figs/kmeans.png" alt="Example of k-means clustering on image pixels by color. K = 2. On the left, an image of a rose. On the right, a two color image where the pink of the rose has been segmented as a separate group from the green of the background." data-attribution="" />
+  <figcaption>K-means clustering on pixels by \(L_2\) distance with \(K=2\).</figcaption>
+</figure>
+
+<!--
+Weather Prediction Notation:
+- $$X$$: yesterday's weather
+- $$Y$$: today's weather
+- $$f$$: hypothetical function mapping $$X \to Y$$
+- $$Y$$: physical conditions of planet/universe yesterday
+- $$T$$: physical conditions of planet/universe today
+- $$p$$: laws of physics, $$p: Y \to T$$
+- $$w$$: interpretation of physical conditions as weather, $$w: T \to Y$$
+-->
+
+<h2 id="feature-extraction">Feature Extraction</h2>
+
+<p>Machine learning relies on data. A data point is a collection of <strong>attributes</strong>. These attributes can be:</p>
+
+<ul>
+  <li>binary
+    <ul>
+      <li>is the car new?</li>
+      <li>is it a convertible?</li>
+    </ul>
+  </li>
+  <li>discrete
+    <ul>
+      <li>what brand is the car?</li>
+      <li>what color?</li>
+    </ul>
+  </li>
+  <li>continuous
+    <ul>
+      <li>how many miles per gallon does the car get?</li>
+      <li>how much does it weigh?</li>
+    </ul>
+  </li>
+  <li>or even more complicated…
+    <ul>
+      <li>a paragraph describing the car in natural english</li>
+      <li>a video of the car driving on a bumpy road</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Machine learning algorithms usually want data in a particular format. For example, decision trees partition the data into discrete categories to make predictions thus can handle discrete attributes on their data. However, logistic regression multiplies the data attributes by a weight matrix to make predictions thus the input data should be continuous.</p>
+
+<p>If we want to perform logistic regression on a data set that has discrete attributes we need to encode them somehow. One possibility is <strong>one-hot encoding</strong>. One-hot encoding converts a single, discrete attribute with \(n\) different possibilities into a binary vector with \(n\) elements.</p>
+
+<p>If the cars in our dataset can be “black”, “green”, “blue”, or “red”, a one-hot encoding of this attribute would assign a black car the vector \([1,0,0,0]\), a green car the vector \([0,1,0,0]\), etc.</p>
+
+<p>One-hot encoding is an example of <strong>feature extraction</strong>. Feature extraction is the process of taking raw data and converting it into useable and useful attributes for a machine learning model. Most machine learning algorithms rely heavily on feature extraction. K-means clustering needs data attributes to be in a metric space where we can compute distances. Logistic regression needs continuous data. <strong>Bayes networks</strong> assume that data attributes are conditionally independent from each other. Each of these restrictions can be addressed by extracting the right features in the right way from raw data.</p>
+
+<h2 id="deep-learning-is-trainable-feature-extraction">Deep Learning is Trainable Feature Extraction</h2>
+
+<p>Hand-designed feature extraction can be very powerful but also very tedious. <strong>Deep learning</strong> encompasses a set of algorithms that process (relatively) raw data instead of curated features. These algorithms learn to extract features from the raw data and then use those features to make predictions.</p>
+
+<p>Typically deep learning is:</p>
+
+<ul>
+  <li>Neural network based</li>
+  <li>Uses large amounts of data</li>
+  <li>Incorporates feature extraction as part of the model
+    <ul>
+      <li>Has many “layers” of processing</li>
+      <li>Early layers extract simple features from raw data</li>
+      <li>Later layers extract complex features from simple features</li>
+    </ul>
+  </li>
+</ul>
+
+<p>This is <em>very</em> exciting for machine learning practitioners. Typically the difference between a good and bad machine learning model comes down to the features the model uses. Good features = good model, or, as they say, “garbage in, garbage out”. Deep learning offers a different path, instead of trying to find what features make a good model, let the model learn and decide for itself.</p>
+
+<p>So far deep learning has been most successful with data that has some inherent <strong>structure</strong> and the algorithms take advantage of that structure. Images are composed of pixels and nearby pixels are statistically more related to each other than far away pixels. Natural language is a string of words where future words depend on past words. Sound is a waveform composed of oscillations at different frequencies with those frequencies changing over time. These are the domains where deep learning (currently) works well.</p>
+
+<p>In domains with less structure (for example, diagnosing an illness based on a patient’s symptoms) there are many algorithms that outperform neural networks or deep learning. For those tasks you are much better off using gradient-boosted decision trees or random forests.</p>
+
+<h2 id="learning-from-data">Learning From Data</h2>
+
+
+  </body>
+</html>
