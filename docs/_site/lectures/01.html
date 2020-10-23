@@ -5,6 +5,7 @@
     <title>Deep Learning - 01 - Machine Learning Review</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://www.desmos.com/api/v1.5/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
   </head>
   <body>
     <h1 id="chapter-1-machine-learning-review">Chapter 1: Machine Learning Review</h1>
@@ -101,7 +102,7 @@
 <p>The k-means algorithm assumes:</p>
 
 <ul>
-  <li>there are some number (k) of clusters in the data</li>
+  <li>there are some number \(k\) of clusters in the data</li>
   <li>each data point belongs to a cluster
     <ul>
       <li>cluster assignments are latent variables, they are not observed</li>
@@ -113,7 +114,7 @@
 
 <p>First k-means randomly initialzes cluster centroids. Then the algorithm alternates between <strong>expectation</strong> and <strong>maximization</strong> steps:</p>
 
-<p><strong>Expectation</strong>: assign data to clusters based on distance to nearest centroid. Each data point is assigned to the cluster of the nearest centroid by some given distance metric (often, but not always, (L_2) distance.</p>
+<p><strong>Expectation</strong>: assign data to clusters based on distance to nearest centroid. Each data point is assigned to the cluster of the nearest centroid by some given distance metric (often, but not always, \(L_2\)) distance.</p>
 
 <p><strong>Maximization</strong>: centroids are updated based on the data that belongs to their cluster. Typically this is done by assigning the centroid to be the mean of the data points assigned to that cluster (hence the “means” in k-means).</p>
 
@@ -200,6 +201,244 @@ Weather Prediction Notation:
 
 <h2 id="learning-from-data">Learning From Data</h2>
 
+<p>The <em>learning</em> part of machine learning means automatically adjusting the parameters of a model based on data. Machine learning algorithms <strong>optimize</strong> the model parameters to give the best model performance for a data set. To optimize our model we first need a way to measure the performance of a model.</p>
+
+<h3 id="loss-functions-describe-how-bad-a-model-performs">Loss Functions Describe How Bad a Model Performs</h3>
+
+<p>A <strong>loss function</strong> describes the performance of a model and a particular set of parameters on a dataset. In particular, it measures how badly the model performs, or how far away from correct the model’s predictions are. There are many options for loss functions but one common one is <strong>\(L_2\) loss</strong> or <strong>mean squared error</strong>.</p>
+
+<h4 id="mean-squared-error">Mean Squared Error</h4>
+
+<p>MSE or \(L_2\) loss measures the squared distance from the models predictions compared to the ground truth over a dataset. Formally, given a dataset of paired inputs and labels \(X = (x_i, y_i)\), a model \(m\), and model parameters \(\theta\), the \(L_2\) loss is given by:</p>
+
+\[L_2(X, m, \theta) = \frac{1}{n} \sum_{i = 1}^n (y_i - m_\theta (x_i))^2\]
+
+<p>In other words, we run our model \(m\) with parameters \(\theta\) on every example to obtain output \(m_\theta (x_i)\). We then take the squared distance of that prediction from the ground truth \(y_i\). We average all those errors over the full dataset.</p>
+
+<p>Now that we have a way to measure how bad our model performs we want to make this term as small as possible. We usually don’t want to change our model or our dataset (that’s called cheating) but we can change our model parameters. In other words we want to find:</p>
+
+\[\mathrm{argmin}_\theta [L_2 (X, m, \theta) ]\]
+
+<p>In plain english, we want to find the values \(\theta\) that minimize our \(L_2\) loss. Read on for how we can do that!</p>
+
+<h3 id="optimization-as-function-minimization">Optimization as Function Minimization</h3>
+
+<p>Optimization just means that given an objective function \(f\) we want to find the inputs \(x\) that give us the best output. This means finding extrema in the function output, either <strong>minima</strong> or <strong>maxima</strong>. These extrema come in two varieties, <strong>local</strong> and <strong>global</strong>.</p>
+
+<p>The <strong>global minimum</strong> of a function is the point \(x\) such that the output of \(f\) is lower at \(x\) than any other point:</p>
+
+\[\forall_y : f(x) \le f(y)\]
+
+<p>A <strong>local minimum</strong> of a function is a point \(x\) such that in a <strong>neighborhood</strong> \(\epsilon\) distance around \(x\), the output of \(f\) is lower at \(x\) than at any point in the neighborhood:</p>
+
+\[\exists_{\epsilon &gt; 0} \forall_y: d(x,y) &lt; \epsilon \implies f(x) \le f(y)\]
+
+<p>The definitions are similar for global/local maxima.</p>
+
+<h4 id="convexity">Convexity</h4>
+
+<figure class="image">
+  <img src="figs/convexity.png" alt="Graph of a convex function vs a non-convex function. On the left a convex function that is cup-shaped. The bottom of the curve is labelled 'Global Minimum'. On the right a non convex function that dips down, rises back up, dips partially back down, levels out, then dips further down, then back up. The first dip is labelled 'Local Minimum'. The leveled out portion is labelled 'Saddle Point'. The final dip down is labelled 'Global Minimum'" data-attribution="" />
+  <figcaption>Any two points on the graph of a convex function can be connected with a line and the line will lie above the graph. Any local minimum of a convex function is the global minimum while non-convex functions can have non-global local minimum and saddle points.</figcaption>
+</figure>
+
+<p>A <strong>convex</strong> function is a function where you can draw a line between any two points on the graph of the function and that line will lie above the graph. For a convex function, any local extrema is guaranteed to be the global extrema. This makes optimization a lot easier, if we find any good answer we know it’s actually the best answer. Unfortunately for neural networks we are optimizing <strong>non-convex</strong> functions.</p>
+
+<p>A <strong>non-convex</strong> function doesn’t have this cup shape. There can be multiple local minima and maxima, there may be saddle points. Algorithms for non-convex optimization get stuck in local minima and have fewer guarantees about the answer they produce. Oh well, we must forge ahead anyway!</p>
+
+<h4 id="identifying-function-extrema">Identifying Function Extrema</h4>
+
+<p>If you remember all the way back to calculus, you can tell a lot about a function by taking it’s derivative. In particular, when a function’s derivative is zero that means it’s either at a local minimum, local maximum, or a <strong>saddle point</strong>. We like local minima and local maxima and we’ll just hope for now that we don’t get stuck at a saddle point (there’s an ongoing debate in the ML community about how much saddle points matter).</p>
+
+<p>Consider a simple quadratic equation. The zero crossing of the derivative shows us where a local minimum is on the function. This function is convex so we know the local minimum is a global minimum:</p>
+
+<figure class="graph">
+    <div id="eq1" style="width: 600px; height: 400px;"></div>
+    <script>
+        var elt = document.getElementById('eq1');
+        var calculator = Desmos.GraphingCalculator(elt);
+        calculator.setExpression({ id: 'eq1', latex: '2x^2 + .5x - 2' });
+        calculator.setExpression({ id: 'eq12', latex: '4x + .5' });
+        calculator.setExpression({ id: 'eq13', latex: '' });
+        calculator.setMathBounds({ left: -4, right: 4, bottom: -4, top: 4 });
+    </script>
+    <figcaption>A graph of \(f(x) = 2x^2 + .5x - 2\) and it's derivative \(f'(x) = 4x + .5\)</figcaption>
+</figure>
+
+<p>For some functions we may have multiple local extrema. For example \(f(x) = \sin(x)\) we have \(f'(x) = \cos(x)\) and every zero crossing of the periodic cosine function is a local minimum or maximum of the sine function.</p>
+
+<figure class="graph">
+    <div id="eq2" style="width: 600px; height: 400px;"></div>
+    <script>
+        var elt = document.getElementById('eq2');
+        var calculator = Desmos.GraphingCalculator(elt);
+        calculator.setExpression({ id: 'eq2', latex: '\\sin(x)' });
+        calculator.setExpression({ id: 'eq22', latex: '\\cos(x)' });
+        calculator.setExpression({ id: 'eq23', latex: '' });
+        calculator.setMathBounds({ left: -4, right: 4, bottom: -4, top: 4 });
+    </script>
+    <figcaption>A graph of \(f(x) = \sin(x)\) and it's derivative \(f'(x) = \cos(x)\)</figcaption>
+</figure>
+
+<h4 id="closed-form-optimization">Closed-Form Optimization</h4>
+
+<p>So to optimize a function all we have to do is find where it’s derivative is zero. This might be pretty easy, consider our quadratic function:</p>
+
+\[f(x) = 2x^2 + .5x - 2\]
+
+<p>In this case we just take the derivative:</p>
+
+\[\frac{d}{dx}f(x) = 4x + .5\]
+
+<p>and finally set the derivative equal to zero and solve for \(x\):</p>
+
+\[\begin{align}
+4x&amp; + .5 = 0 \\\\
+4x&amp; = -.5    \\\\
+x&amp; = -.125
+\end{align}\]
+
+<h4 id="derivatives-without-closed-form-solution">Derivatives Without Closed-Form Solution</h4>
+
+<p><strong>Algebraic</strong> functions (functions that are just composed of addition, subtraction, multiplication, division, and raising to a power) are often easy to solve. <strong>Transcendental</strong> functions, or non-algebraic functions, can be a bit trickier. Consider \(f(x) = e^{-x} + x^2\). We can take the derivative of this function and try to set it equal to zero:</p>
+
+\[\begin{align}
+\frac{d}{dx} f(x) &amp;= -e^{-x} + 2x \\
+0 &amp;= -e^{-x} + 2x \\
+e^{-x} &amp;= 2x \\
+\end{align}\]
+
+<p>But we run out of tools to solve for \(x\). But there is a zero crossing of the derivative, somewhere around \(x \approx .351734\). So how do we find it?</p>
+
+<figure class="graph">
+    <div id="eq3" style="width: 600px; height: 400px;"></div>
+    <script>
+        var elt = document.getElementById('eq3');
+        var calculator = Desmos.GraphingCalculator(elt);
+        calculator.setExpression({ id: 'eq3', latex: 'e^{-x} + x^2' });
+        calculator.setExpression({ id: 'eq32', latex: '-e^{-x} + 2x' });
+        calculator.setExpression({ id: 'eq33', latex: '' });
+        calculator.setMathBounds({ left: -4, right: 4, bottom: -4, top: 4 });
+    </script>
+    <figcaption>A graph of \(f(x) = e^{-x} + x^2\) and it's derivative \(f'(x) = -e^{-x} + 2x\)</figcaption>
+</figure>
+
+<h4 id="the-derivative-points-the-way">The Derivative Points The Way</h4>
+
+<p>While there may be no closed-form solution to find the local minimum, the derivative can still be useful. The derivative tells us about the local structure of \(f(x)\):</p>
+
+<ul>
+  <li>if \(\frac{d}{dx} f(x)\) is positive then increasing \(x\) will increase \(f(x)\)</li>
+  <li>if \(\frac{d}{dx} f(x)\) is negative then increasing \(x\) will decrease \(f(x)\)</li>
+</ul>
+
+<p>So if we want to minimize our function we just have to move in the opposite direction of the derivative. If the derivative is positive we make \(x\) smaller. If it’s negative we make \(x\) bigger. Assuming our change to \(x\) is sufficiently small this will make \(f(x)\) go down at least by a little bit. Once we have made a change to \(x\) we can re-evaluate our derivative and see what to do next.</p>
+
+<p>For example if we start at \(x = -.5\):</p>
+
+<ul>
+  <li>\(f(-.5) = 1.8987\)</li>
+  <li>\(f’(-.5) = -2.6487\)</li>
+  <li>Gradient is negative</li>
+  <li>Need to increase \(x\)</li>
+</ul>
+
+<p>Say we increase every step by \(.25\)</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>\(x\)</th>
+      <th>\(f(x)\)</th>
+      <th>\(f'(x)\)</th>
+      <th>Direction to move</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-.5</td>
+      <td>1.8987</td>
+      <td>-2.6487</td>
+      <td>Increase \(x\)</td>
+    </tr>
+    <tr>
+      <td>-.25</td>
+      <td>1.3465</td>
+      <td>-1.7840</td>
+      <td>Increase \(x\)</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>-1</td>
+      <td>Increase \(x\)</td>
+    </tr>
+    <tr>
+      <td>.25</td>
+      <td>.8413</td>
+      <td>-.2788</td>
+      <td>Increase \(x\)</td>
+    </tr>
+    <tr>
+      <td>.5</td>
+      <td>.8563</td>
+      <td>.3935</td>
+      <td>Decrease \(x\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>We haven’t found our precise local minimum but we do know that \(f'(x)\) crosses zero somewhere between \(.25 &lt; x &lt; .5\). That’s pretty good! But we can do better.</p>
+
+<p>Instead of moving by a constant amount every time we can move based on the magnitude of the derivative. For example, when the derivative magnitude is large we might want to move further and when the derivative is smaller we will move less. This way, if our function is smooth the example, as we get closer to the minimum we will move by smaller increments to get a better estimate.</p>
+
+<p>However, before we were moving by \(.25\) every step and our smallest derivative magnitude was \(.2788\) so if we just move by the amount of the derivative we will still move too much! So we will move based on our derivative but scaled by some value.</p>
+
+<h3 id="gradient-descent">Gradient Descent</h3>
+
+<p>We are finally ready for our non-convex, iterative optimization algorithm. We have some value for our function input \(x\) and at every time step we will simply move in the opposite direction of the derivative by an amount based on the magnitude of the derivative and scaled by some amount \(\eta\), called the <strong>learning rate</strong>.</p>
+
+<h4 id="why-gradient-descent">Why “Gradient” Descent?</h4>
+
+<p>We’ve been talking about derivatives, what’s this gradient thing? The <strong>gradient</strong> is sort of like a generalization of the derivative to multiple dimensions. For a function that takes multiple inputs the gradient gives the partial derivatives of that function with respect to each of the inputs. Formally:</p>
+
+\[\nabla f(\mathbf{x}) = [\frac{\delta}{\delta x_1} f(\mathbf{x}), \frac{\delta}{\delta x_2} f(\mathbf{x}),\frac{\delta}{\delta x_3} f(\mathbf{x}), \dots ]\]
+
+<p>Like the derivative, the gradient of a function points in the direction of steepest ascent of the function. Therefore if we want to minimize a function we can move in the direction opposite the gradient, hence gradient descent!</p>
+
+<h4 id="gradient-descent-algorithm">Gradient Descent Algorithm</h4>
+
+<ul>
+  <li>To find \( \mathrm{argmin}_x f(x) \):
+    <ul>
+      <li>start with some estimate of \(x\)</li>
+      <li>repeat until converged:
+        <ul>
+          <li>\(x = x - \eta \nabla f(x)\)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>Values for \(\eta\) can vary greatly depending on the problem domain or function. In neural network optimization typical values range from \([0.00001 - 0.1]\).</p>
+
+<p>With some assumptions about the function being well behaved and the learning rate being sufficiently small, gradient descent is guaranteed to converge to a local minimum. However, it is not necessarrily a global minimum and depending on the initialization and function multiple runs can converge to different local minima.</p>
+
+<h3 id="case-study-linear-regression">Case Study: Linear Regression</h3>
+
+<p>For linear regression our model fits a line to a set of data: \(m(x) = ax + b\). In this case our model parameters \(\theta = \{a, b\}\). We can use our previously discussed loss function \(L_2\) to optimize this model:</p>
+
+\[L_2(X, m, \{a, b\}) = \frac{1}{n} \sum_{i=1}{n} (y_i - (ax + b))^2\]
+
+<p>At every step we will update based on the gradient of the loss:</p>
+
+\[\begin{align}
+\nabla L_2(X, m, \{a, b\}) &amp;= [\frac{\delta}{\delta a} \frac{1}{n} \sum_{i=1}^{n} (y_i - (ax + b))^2 ,\frac{\delta}{\delta b} \frac{1}{n} \sum_{i=1}^{n} (y_i - (ax + b))^2 ] \\
+&amp;= [\frac{\delta}{\delta a} \sum_{i=1}^{n} (y_i - (ax + b))^2 ,\frac{\delta}{\delta b} \sum_{i=1}^{n} (y_i - (ax + b))^2 ] \\
+&amp;= [\sum_{i=1}^{n} 2 (y_i - (ax + b)) \frac{\delta}{\delta a} -(ax + b)  ,\sum_{i=1}^{n} 2 (y_i - (ax + b)) \frac{\delta}{\delta b} -(ax + b) ] \\
+&amp;= [\sum_{i=1}^{n} -2 (y_i - (ax + b)) x  ,\sum_{i=1}^{n} -2 (y_i - (ax + b)) ] \\
+\end{align}\]
 
   </body>
 </html>
