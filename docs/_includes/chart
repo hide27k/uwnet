@@ -1,0 +1,6 @@
+<figure class="chart">
+<div class="mermaid">
+{{ include.chart }}
+</div>
+<figcaption>{{ include.caption }}</figcaption>
+</figure>

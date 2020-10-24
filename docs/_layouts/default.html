@@ -3,9 +3,37 @@
   <head>
     <meta charset="utf-8">
     <title>{{ page.title }}</title>
+<style>
+foreignObject {overflow:visible}
+</style>
+
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!--script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script-->
+
     <script src="https://www.desmos.com/api/v1.5/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:false,
+        flowchart:{
+            curve:'basis',
+            htmlLabels:true,
+        },
+        theme: 'default',
+        themeVariables:{
+            edgeLabelBackground:'#fff',
+        },
+    });
+    window.onload = function(){
+                mermaid.init();
+                (function () {
+                  var script = document.createElement('script');
+                  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+                  script.async = true;
+                  document.head.appendChild(script);
+                })();
+        
+    };
+    </script>
   </head>
   <body>
     {{ content }}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Test Space</title>
+<style>
+foreignObject {overflow:visible}
+</style>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <!--script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script-->
+
+    <script src="https://www.desmos.com/api/v1.5/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:false,
+        flowchart:{
+            curve:'basis',
+            htmlLabels:true,
+        },
+        theme: 'default',
+        themeVariables:{
+            edgeLabelBackground:'#fff',
+        },
+    });
+    window.onload = function(){
+                mermaid.init();
+                (function () {
+                  var script = document.createElement('script');
+                  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+                  script.async = true;
+                  document.head.appendChild(script);
+                })();
+        
+    };
+    </script>
+  </head>
+  <body>
+    <h2 id="neural-network-example">Neural Network Example</h2>
+<figure class="chart">
+<div class="mermaid">
+
+graph LR
+    x1(("\(x_1\)")) --&gt;|"\(w_1\)"| y1(("\(y_1\)"))
+    x2(("\(x_2\)")) --&gt;|"\(w_2\)"| y1
+    x3(("\(x_3\)")) --&gt;|"\(w_3\)"| y1
+    x4(("\(x_4\)")) --&gt;|"\(w_4\)"| y1
+    x1 --&gt; |"\(w_5\)"| y2(("\(y_1\)"))
+    x2 --&gt; |"\(w_6\)"| y2
+    x3 --&gt; |"\(w_7\)"| y2
+    x4 --&gt; |"\(w_8\)"| y2
+    y1 --&gt; |"\(v_1\)"| z(("\(z\)"))
+    y2 --&gt; |"\(v_2\)"| z
+
+</div>
+<figcaption>An example, 2 layer neural network. The first layer is computed as \(y = wx\). The second layer is computed as \(z = vy\)</figcaption>
+</figure>
+
+<h2 id="loss-functions">Loss Functions</h2>
+<figure class="chart">
+<div class="mermaid">
+
+graph LR
+    a["model parameters <br /> (weights)"] --&gt; model
+    subgraph Loss Function
+    model --&gt; | predictions | error
+    data --&gt; | labels | error
+    data --&gt; | features | model
+    end
+    error --&gt; loss
+
+</div>
+<figcaption>The loss function takes as input the parameters to the model. It uses those parameters to calculate predictions based on features from the data. It compares these predictions to the labels from that data and outputs the calculated loss.</figcaption>
+</figure>
+
+
+  </body>
+</html>

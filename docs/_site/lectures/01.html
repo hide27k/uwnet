@@ -3,9 +3,37 @@
   <head>
     <meta charset="utf-8">
     <title>Deep Learning - 01 - Machine Learning Review</title>
+<style>
+foreignObject {overflow:visible}
+</style>
+
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!--script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script-->
+
     <script src="https://www.desmos.com/api/v1.5/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:false,
+        flowchart:{
+            curve:'basis',
+            htmlLabels:true,
+        },
+        theme: 'default',
+        themeVariables:{
+            edgeLabelBackground:'#fff',
+        },
+    });
+    window.onload = function(){
+                mermaid.init();
+                (function () {
+                  var script = document.createElement('script');
+                  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+                  script.async = true;
+                  document.head.appendChild(script);
+                })();
+        
+    };
+    </script>
   </head>
   <body>
     <h1 id="chapter-1-machine-learning-review">Chapter 1: Machine Learning Review</h1>
@@ -434,11 +462,44 @@ e^{-x} &amp;= 2x \\
 <p>At every step we will update based on the gradient of the loss:</p>
 
 \[\begin{align}
-\nabla L_2(X, m, \{a, b\}) &amp;= [\frac{\delta}{\delta a} \frac{1}{n} \sum_{i=1}^{n} (y_i - (ax + b))^2 ,\frac{\delta}{\delta b} \frac{1}{n} \sum_{i=1}^{n} (y_i - (ax + b))^2 ] \\
-&amp;= [\frac{\delta}{\delta a} \sum_{i=1}^{n} (y_i - (ax + b))^2 ,\frac{\delta}{\delta b} \sum_{i=1}^{n} (y_i - (ax + b))^2 ] \\
-&amp;= [\sum_{i=1}^{n} 2 (y_i - (ax + b)) \frac{\delta}{\delta a} -(ax + b)  ,\sum_{i=1}^{n} 2 (y_i - (ax + b)) \frac{\delta}{\delta b} -(ax + b) ] \\
-&amp;= [\sum_{i=1}^{n} -2 (y_i - (ax + b)) x  ,\sum_{i=1}^{n} -2 (y_i - (ax + b)) ] \\
+\nabla L_2(X, m, \{a, b\}) &amp;= [\frac{\delta}{\delta a} L_2(X, m, \{a, b\}),\frac{\delta}{\delta b} L_2(X, m, \{a, b\}) ] \\
+&amp;= [\frac{\delta}{\delta a} \frac{1}{n} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ,\frac{\delta}{\delta b} \frac{1}{n} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ] \\
+&amp;= [\frac{\delta}{\delta a} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ,\frac{\delta}{\delta b} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ] \\
+&amp;= [\sum_{i=1}^{n} 2 (y_i - (ax_i + b)) \frac{\delta}{\delta a} -(ax_i + b)  ,\sum_{i=1}^{n} 2 (y_i - (ax_i + b)) \frac{\delta}{\delta b} -(ax_i + b) ] \\
+&amp;= [\sum_{i=1}^{n} -2 (y_i - (ax_i + b)) x_i  ,\sum_{i=1}^{n} -2 (y_i - (ax_i + b)) ] \\
 \end{align}\]
+
+<p>Let’s define \(h_i = ax_i + b\) to be the output of our model. Then we can look just at how we would update the biases of our model:</p>
+
+\[\frac{\delta}{\delta b} L_2 =  \sum -2 (y_i - h_i)\]
+
+<p>Since we are subtracting our gradient this means our update would look like:</p>
+
+\[b = b + \eta \sum 2 (y_i - h_i)\]
+
+<p>This makes sense, if our model consistently predicts too small of values than \(\sum 2(y_i - h_i)\) will be negative and we will increase our bias. If our model predicts too large of values the sum will be negative and we will lower our bias.</p>
+
+<p>The logic is similar for updating parameter \(a\) except the error our model makes is multiplied by the input \(x\). This makes sense, if the model predicts too small a value the parameter \(a\) should increase if \(x\) is positive and decrease if \(x\) is negative.</p>
+
+<figure class="chart">
+<div class="mermaid">
+
+graph LR
+    x1(("\(x_1\)")) --&gt;|"\(w_1\)"| y1(("\(y_1\)"))
+    x2(("\(x_2\)")) --&gt;|"\(w_2\)"| y1
+    x3(("\(x_3\)")) --&gt;|"\(w_3\)"| y1
+    x4(("\(x_4\)")) --&gt;|"\(w_4\)"| y1
+    x1 --&gt; |"\(w_5\)"| y2(("\(y_1\)"))
+    x2 --&gt; |"\(w_6\)"| y2
+    x3 --&gt; |"\(w_7\)"| y2
+    x4 --&gt; |"\(w_8\)"| y2
+    y1 --&gt; |"\(v_1\)"| z(("\(z\)"))
+    y2 --&gt; |"\(v_2\)"| z
+
+</div>
+<figcaption>An example, 2 layer neural network. The first layer is computed as \(y = wx\). The second layer is computed as \(z = vy\)</figcaption>
+</figure>
+
 
   </body>
 </html>
