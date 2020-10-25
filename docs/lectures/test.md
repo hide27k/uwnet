@@ -52,6 +52,7 @@ graph LR
 caption="Forward propagation through a connected layer. The input \(x\) is multiplied by the weights \(w\) and added to the biases \(b\). The output is \(y = wx + b\)"
 %}
 
+
 ## Backward Propagation Through Connected Layer
 {% include chart
 chart='

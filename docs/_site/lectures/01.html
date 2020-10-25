@@ -439,7 +439,7 @@ e^{-x} &amp;= 2x \\
 
 <p>We’ve been talking about derivatives, what’s this gradient thing? The <strong>gradient</strong> is sort of like a generalization of the derivative to multiple dimensions. For a function that takes multiple inputs the gradient gives the partial derivatives of that function with respect to each of the inputs. Formally:</p>
 
-\[\nabla f(\mathbf{x}) = [\frac{\delta}{\delta x_1} f(\mathbf{x}), \frac{\delta}{\delta x_2} f(\mathbf{x}),\frac{\delta}{\delta x_3} f(\mathbf{x}), \dots ]\]
+\[\nabla f(\mathbf{x}) = [\frac{d}{d x_1} f(\mathbf{x}), \frac{d}{d x_2} f(\mathbf{x}),\frac{d}{d x_3} f(\mathbf{x}), \dots ]\]
 
 <p>Like the derivative, the gradient of a function points in the direction of steepest ascent of the function. Therefore if we want to minimize a function we can move in the direction opposite the gradient, hence gradient descent!</p>
 
@@ -462,7 +462,7 @@ e^{-x} &amp;= 2x \\
 
 <p>With some assumptions about the function being well behaved and the learning rate being sufficiently small, gradient descent is guaranteed to converge to a local minimum. However, it is not necessarrily a global minimum and depending on the initialization and function multiple runs can converge to different local minima.</p>
 
-<h3 id="case-study-linear-regression">Case Study: Linear Regression</h3>
+<h2 id="case-study-linear-regression">Case Study: Linear Regression</h2>
 
 <p>For linear regression our model fits a line to a set of data: \(m(x) = ax + b\). In this case our model parameters \(\theta = \{a, b\}\). We can use our previously discussed loss function \(L_2\) to optimize this model:</p>
 
@@ -471,16 +471,16 @@ e^{-x} &amp;= 2x \\
 <p>At every step we will update based on the gradient of the loss:</p>
 
 \[\begin{align}
-\nabla L_2(X, m, \{a, b\}) &amp;= [\frac{\delta}{\delta a} L_2(X, m, \{a, b\}),\frac{\delta}{\delta b} L_2(X, m, \{a, b\}) ] \\
-&amp;= [\frac{\delta}{\delta a} \frac{1}{n} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ,\frac{\delta}{\delta b} \frac{1}{n} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ] \\
-&amp;= [\frac{\delta}{\delta a} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ,\frac{\delta}{\delta b} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ] \\
-&amp;= [\sum_{i=1}^{n} 2 (y_i - (ax_i + b)) \frac{\delta}{\delta a} -(ax_i + b)  ,\sum_{i=1}^{n} 2 (y_i - (ax_i + b)) \frac{\delta}{\delta b} -(ax_i + b) ] \\
+\nabla L_2(X, m, \{a, b\}) &amp;= [\frac{d}{d a} L_2(X, m, \{a, b\}),\frac{d}{d b} L_2(X, m, \{a, b\}) ] \\
+&amp;= [\frac{d}{d a} \frac{1}{n} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ,\frac{d}{d b} \frac{1}{n} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ] \\
+&amp;= [\frac{d}{d a} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ,\frac{d}{d b} \sum_{i=1}^{n} (y_i - (ax_i + b))^2 ] \\
+&amp;= [\sum_{i=1}^{n} 2 (y_i - (ax_i + b)) \frac{d}{d a} -(ax_i + b)  ,\sum_{i=1}^{n} 2 (y_i - (ax_i + b)) \frac{d}{d b} -(ax_i + b) ] \\
 &amp;= [\sum_{i=1}^{n} -2 (y_i - (ax_i + b)) x_i  ,\sum_{i=1}^{n} -2 (y_i - (ax_i + b)) ] \\
 \end{align}\]
 
 <p>Let’s define \(h_i = ax_i + b\) to be the output of our model. Then we can look just at how we would update the biases of our model:</p>
 
-\[\frac{\delta}{\delta b} L_2 =  \sum -2 (y_i - h_i)\]
+\[\frac{d}{d b} L_2 =  \sum -2 (y_i - h_i)\]
 
 <p>Since we are subtracting our gradient this means our update would look like:</p>
 
@@ -490,24 +490,170 @@ e^{-x} &amp;= 2x \\
 
 <p>The logic is similar for updating parameter \(a\) except the error our model makes is multiplied by the input \(x\). This makes sense, if the model predicts too small a value the parameter \(a\) should increase if \(x\) is positive and decrease if \(x\) is negative.</p>
 
-<figure class="chart">
-<div class="mermaid">
+<h2 id="case-study-logistic-regression">Case Study: Logistic Regression</h2>
 
-graph LR
-    x1(("\(x_1\)")) --&gt;|"\(w_1\)"| y1(("\(y_1\)"))
-    x2(("\(x_2\)")) --&gt;|"\(w_2\)"| y1
-    x3(("\(x_3\)")) --&gt;|"\(w_3\)"| y1
-    x4(("\(x_4\)")) --&gt;|"\(w_4\)"| y1
-    x1 --&gt; |"\(w_5\)"| y2(("\(y_1\)"))
-    x2 --&gt; |"\(w_6\)"| y2
-    x3 --&gt; |"\(w_7\)"| y2
-    x4 --&gt; |"\(w_8\)"| y2
-    y1 --&gt; |"\(v_1\)"| z(("\(z\)"))
-    y2 --&gt; |"\(v_2\)"| z
+<p>Classification algorithms assign class labels or probabilities to data instead of real-value output but they function very similarly with regards to training and testing. <strong>Binary classification</strong> is the simplest classification task, the label is just a single bit, either the data point is a positive or negative example of some particular class.</p>
 
-</div>
-<figcaption>An example, 2 layer neural network. The first layer is computed as \(y = wx\). The second layer is computed as \(z = vy\)</figcaption>
+<p>Consider the following example dataset:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>x</th>
+      <th>y</th>
+      <th>label</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>4</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Notice that when \(x &lt; y\) the label is 1 and when \(x &gt; y\) the label is 0. This data is <strong>linearly separable</strong> with many functions but one example would be the line defined by \(y = x\). The points that lie above this line are positive examples and the points below are negative.</p>
+
+<p>In general, a <strong>linear classifier</strong> learns a model of the data that separates it based on a line (or hyper-plane in more dimensions). The model uses a function \(f\) and learns a set of weights \(w\) to make predictions where the output of the model is the probability that a data point is positive for the label:</p>
+
+\[\Pr( \mathrm{label} | x) = f(w \cdot x) = f(\sum_i w_i x_i)\]
+
+<figure class="image">
+  <img src="figs/classifierex.png" alt="A plot of the example data with a dividing line at y = x. Points above the line are positive exmaples, points below are negative. An unlabelled point at (4,5) is shown." data-attribution="" />
+  <figcaption>Linear classification on the exmaple dataset. The new point lies above the line thus is labelled as a positive example.</figcaption>
 </figure>
+
+<p>This function \(f\) can take many forms. one is simply a thresholding function: \(f(x) = \begin{cases} 1 &amp;\text{if } x &gt; 0\\ 0&amp;\text{otherwise} \end{cases}\) In our example dataset one linear classifier would be a thresholding function at \(0\) with learned weights \([-1, 1]\). Given a new data point, say \([4,5]\) the model takes the dot product of the input with weights and applies the threshold:</p>
+
+\[\begin{align}
+Pr( label | (4,5)) &amp;= f(w \cdot x) \\
+&amp;= f([-1, 1] \cdot [4, 5]) \\
+&amp;= f(-4 + 5) \\
+&amp;= f(1) \\
+&amp;= 1 
+\end{align}\]
+
+<p>This simple model works for our current dataset but has the constraint that the <strong>decision boundary</strong> must pass through the origin, \((0,0)\). In practice our data may be shifted around and this constraint would hinder our performance. Thus most linear models incorporate a bias term that is added to the weighted sum of weights and input features to make the model more robust. In this case our model learn parameters \(\theta = (w, b)\) and the output would be:</p>
+
+\[\Pr(\text{label} \mid x) = f(w \cdot x + b)\]
+
+<p>Using a threshold as our function assigns hard labels to new data points regardless of where they fall. In practice it is useful to predict <strong>soft labels</strong> or probabilities. This allows the model to convey relative confidence in it’s predictions, for example the model should probably be less confident abount data closer to the decision boundary and more confident about data further from the boundary. Importantly, the threshold function is also not differentiable so optimization is more difficult, let’s pick a better function.</p>
+
+<p>The <strong>logistic function</strong>, \(\sigma(x) = \frac{1}{1 + e^{-x}}\) is differentiable and maps the real numbers to the interval \([0,1]\). The letter \(\sigma\) is often used to represent the logistic function because it is <strong>sigmoid</strong> or has an S-shape to it:</p>
+
+<figure class="graph">
+    <div id="logistic" style="width: 600px; height: 400px;"></div>
+    <script>
+        var elt = document.getElementById('logistic');
+        var calculator = Desmos.GraphingCalculator(elt);
+        calculator.setExpression({ id: 'logistic', latex: '1/(1+e^{-x})' });
+        calculator.setExpression({ id: 'logistic2', latex: '' });
+        calculator.setExpression({ id: 'logistic3', latex: '' });
+        calculator.setMathBounds({ left: -4, right: 4, bottom: -4, top: 4 });
+    </script>
+    <figcaption>A graph of the logistic function \(\sigma(x) = \frac{1}{1 + e^{-x}}\)</figcaption>
+</figure>
+
+<p>Now points on the decision boundary, where the weighted sum is 0, will be assigned a probability of \(0.5\). As points fall further from the boundary the model will be more confident in it’s prediction.</p>
+
+<h3 id="optimizing-logistic-regression">Optimizing Logistic Regression</h3>
+
+<p>We have a differentiable model but we also need a loss function. In this case we will use <strong>negative log likelihood</strong> or the negative probability that the model assigns to the labels of our dataset:</p>
+
+\[\text{NLL}(\theta \mid X, Y) = - \log[\Pr (Y \mid X, \theta)] = -\log \prod_i \Pr(y_i \mid x_i, \theta)\]
+
+<p>Note that \(\Pr(y_i \mid x_i, w)\) is just the probability our model assigns to the ground truth label:</p>
+
+<ul>
+  <li>If \(y_i = 1\) this quantitiy is \(\Pr(1 \mid x_i, \theta) = \sigma(w \cdot x_i + b)\)</li>
+  <li>If \(y_i = 0\) this quantitiy is \(\Pr(0 \mid x_i, \theta) = 1 - \sigma(w \cdot x_i + b)\)</li>
+</ul>
+
+<p>So substituting in:</p>
+
+\[\begin{align}
+\text{NLL}(\theta \mid X, Y) &amp;= -\log \prod_i [(\sigma(w \cdot x + b))^{y_i} (1-\sigma(w \cdot x + b))^{1-y_i}]\\
+&amp;= -\sum_i \log [(\sigma(w \cdot x + b))^{y_i} (1-\sigma(w \cdot x + b))^{1-y_i}] \\
+&amp;= -\sum_i \log [(\sigma(w \cdot x + b))^{y_i}]  + \log [(1-\sigma(w \cdot x + b))^{1-y_i}]\\
+&amp;= -\sum_i y_i \log (\sigma(w \cdot x + b))  + (1-y_i)\log (1-\sigma(w \cdot x + b))\\
+\end{align}\]
+
+<p>Now we’re gonna get into some boring math. Here’s a couple equalities about our logistic function and logarithms:</p>
+
+<ul>
+  <li>\( \log(\sigma(x)) = -\log(1 + e^{-x}) \)</li>
+  <li>\( \log(1 - \sigma(x)) = -x -\log(1 + e^{-x}) = -\log(e^x + 1) \)</li>
+</ul>
+
+<p>So let’s crank through some substitutions</p>
+
+\[\begin{align}
+\text{NLL}(\theta \mid X, Y) &amp;= -\sum_i y_i \log (\sigma(w \cdot x + b))  + (1-y_i)\log (1-\sigma(w \cdot x + b))\\
+ &amp;= -\sum_i \cancel{- y_i \log(1 + e^{-(w \cdot x_i + b)})} + (1-y_i) [-(w \cdot x_i + b) \cancel{- \log(1 + e^{-(w \cdot x_i + b)})}]  \\
+ &amp;= -\sum_i y_i (w \cdot x_i + b) - (w \cdot x_i + b) - \log(1 + e^{-(w \cdot x_i + b)})\\
+ &amp;= -\sum_i y_i (w \cdot x_i + b) - \log(1 + e^{w \cdot x_i + b})
+\end{align}\]
+
+<p>NOW we have simplified our loss function we can figure out how to update the weights. We want to take the gradient of our loss</p>
+
+\[\begin{align}
+\nabla_{w,b} \text{NLL}(\theta \mid X, Y) &amp;= \nabla -\sum_i y_i (w \cdot x_i + b) - \log(1 + e^{w \cdot x_i + b}) \\
+&amp;= -\sum_i \nabla y_i (w \cdot x_i + b) - \nabla \log(1 + e^{w \cdot x_i + b}) \\
+&amp;= -\sum_i y_i \nabla (w \cdot x_i + b) - \frac{e^{w \cdot x_i + b}}{1 + e^{w\cdot x_i + b}} \nabla (w \cdot x_i + b) \\
+&amp;= -\sum_i [\nabla (w \cdot x_i + b)] [y_i - \frac{e^{w \cdot x_i + b}}{1 + e^{w\cdot x_i + b}}] \\
+&amp;= -\sum_i [\nabla (w \cdot x_i + b)] [y_i - \sigma(w \cdot x_i + b)] \\
+&amp;= \sum_i [\nabla (w \cdot x_i + b)] [\sigma(w \cdot x_i + b) - y_i] \\
+\end{align}\]
+
+<p>So there’s two components. \(\sigma(w \cdot x_i + b) - y_i\) is just the difference between the predictions and the true label. \(\nabla (w\cdot x_i + b)\) is just the partial derivatives of the weighted sum. For the bias term \(\frac{d}{db} (w \cdot x_i + b) = 1\) and for the weights \(\frac{d}{dw}(w \cdot x_i + b) = x_i\).</p>
+
+<p>Thus our update rules are:</p>
+
+\[\begin{align}
+w &amp;= w - \eta \sum_i x_i (\sigma(w \cdot x_i + b) - y_i)\\
+b &amp;= b - \eta \sum_i (\sigma(w \cdot x_i + b) - y_i)\\
+\end{align}\]
+
+<p>This is very similar to our update rules for linear regression!</p>
+
+<h2 id="stochastic-gradient-descent">Stochastic Gradient Descent</h2>
+
+<p>Notice that our update rule involves summing over the entire dataset the difference between our prediction and the ground truth label. That’s a lot of work! We have to run the model on every instance in the dataset just to update our weights by a small amount. What if instead of taking the full gradient of the loss function we just took an estimate? How could we do this estimate?</p>
+
+<p>We just randomly sample! In <strong>stochastic gradient descent</strong> we estimate our loss function on a randomly sampled subset of the data. The number of elements we sample from our data is the <strong>batch size</strong>. You can use a batch size even as low as a single element of the data. In that case our update rule would be:</p>
+
+\[\begin{align}
+w &amp;= w - \eta x (\sigma(w \cdot x + b) - y)\\
+b &amp;= b - \eta (\sigma(w \cdot x + b) - y)\\
+\end{align}\]
+
+<p>Cool cool cool. Stochastic gradient descent uses random sampling to get a <strong>noisy</strong> estimate of the gradient. However, because we sample randomly the estimate is <strong>unbiased</strong>, i.e. the errors will average out over time. Thus we can just make smaller updates to our parameters and trust that we will eventually get to the right place (or learn a bunch of math and prove it!).</p>
 
 
   </body>
