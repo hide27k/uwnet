@@ -35,3 +35,55 @@ graph LR
 '
 caption="The loss function takes as input the parameters to the model. It uses those parameters to calculate predictions based on features from the data. It compares these predictions to the labels from that data and outputs the calculated loss."
 %}
+
+## Forward Propagation Through Connected Layer
+{% include chart
+chart='
+graph LR
+    x["\(x\)"] --> wx["\(wx\)"]
+    subgraph Connected Layer
+    w["\(w\)"] --> wx
+    wx --> wxb["\(wx+b\)"]
+    b["\(b\)"] --> wxb
+    end
+    wxb --> y["\(y\)"]
+
+'
+caption="Forward propagation through a connected layer. The input \(x\) is multiplied by the weights \(w\) and added to the biases \(b\). The output is \(y = wx + b\)"
+%}
+
+## Backward Propagation Through Connected Layer
+{% include chart
+chart='
+graph RL
+    dLdy["\(\frac{d L}<br />{d y}\)"] --> dLdwxb["\(\frac{d L}<br />{d wx + b}\)"]
+    subgraph Connected Layer
+    dLdwxb --> |aggregate| dLdb["\(\frac{d L}<br />{d b}\)"]
+    dLdwxb --> dLdwx["\(\frac{d L}<br />{d wx}\)"]
+    dLdwx --> dLdx["\(\frac{d L}<br />{d x}\)"]
+    dLdwx --> dLdw["\(\frac{d L}<br />{d w}\)"]
+    w["\(w\)"] --> |"\(\frac{d wx}<br />{d x}\)"| dLdx
+    end
+    x["\(x\)"] --> |"\(\frac{d wx}<br />{d w}\)"|dLdw
+    dLdx --> dLdxout["\(\frac{d L}<br />{d x}\)"]
+'
+caption="Backward propagation through a connected layer. The input is the \(\d_x\)"
+%}
+
+## Backward Propagation Through Connected Layer
+{% include chart
+chart='
+graph RL
+    dLdy["\(\d_y L\)"] --> dLdwxb["\(\d_{wx + b}L\)"]
+    subgraph Connected Layer
+    dLdwxb --> |aggregate| dLdb["\(\d_{b}L\)"]
+    dLdwxb --> dLdwx["\(\d_{wx}L\)"]
+    dLdwx --> dLdx["\(\d_{x}L\)"]
+    dLdwx --> dLdw["\(\d_{w}L\)"]
+    w["\(w\)"] --> |"\(\d_{x}wx = w^T\)"| dLdx
+    end
+    x["\(x\)"] --> |"\(\d_{w}wx = x^T\)"|dLdw
+    dLdx --> dLdxout["\(\d_{x}L\)"]
+'
+caption="Backward propagation through a connected layer. The input is the gradient of the loss with respect to \(y\): \(\d_y L\) which is equivalent to the gradient of the loss with respect to the weighted sum: \(\d_{wx+b} L\). By aggregating over examples in the batch we get the gradient with respect to the bias: \(\d_bL\). We also know the equality \(\d_{wx + b}L = \d_{wx}L\)."
+%}

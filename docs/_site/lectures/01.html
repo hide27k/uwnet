@@ -25,6 +25,15 @@ foreignObject {overflow:visible}
     });
     window.onload = function(){
                 mermaid.init();
+
+                window.MathJax = {
+                  tex: {
+                    macros: {
+                      d: "{\\nabla}",
+                    }
+                  }
+                };
+
                 (function () {
                   var script = document.createElement('script');
                   script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
