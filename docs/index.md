@@ -7,5 +7,6 @@ title: Index
 
 ## Table of Contents
 
-[Chapter 1 - Machine Learning Review](lectures/01)
+- [Chapter 1 - Machine Learning Review](notes/01)
+- [Chapter 9 - Recurrent Neural Networks](lectures/09)
 

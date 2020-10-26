@@ -3,46 +3,42 @@
   <head>
     <meta charset="utf-8">
     <title>Deep Learning - 01 - Machine Learning Review</title>
-<style>
-foreignObject {overflow:visible}
-</style>
+    <style>
+        foreignObject {overflow:visible}
+        img {max-width:100%}
+        /*figure {max-width:100%}*/
+        .small {font-size:70%}
+        .large {font-size:130%}
+        /*.mermaidsvg {max-width:40%;}*/
+        .remark-container figure{
+            margin:0;
+        }
+
+        .col30{float:left; width:30%}
+        .col40{float:left; width:40%}
+        .col50{float:left; width:50%}
+        .col60{float:left; width:60%}
+        .col70{float:left; width:70%}
+
+
+
+        /*@import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+        @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+        @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+        body { font-family: 'Droid Serif'; }
+        h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+        }
+        .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+        */
+    </style>
 
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <!--script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script-->
-
     <script src="https://www.desmos.com/api/v1.5/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:false,
-        flowchart:{
-            curve:'basis',
-            htmlLabels:true,
-        },
-        theme: 'default',
-        themeVariables:{
-            edgeLabelBackground:'#fff',
-        },
-    });
-    window.onload = function(){
-                mermaid.init();
 
-                window.MathJax = {
-                  tex: {
-                    macros: {
-                      d: "{\\nabla}",
-                    }
-                  }
-                };
-
-                (function () {
-                  var script = document.createElement('script');
-                  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-                  script.async = true;
-                  document.head.appendChild(script);
-                })();
-        
-    };
-    </script>
   </head>
   <body>
     <h1 id="chapter-1-machine-learning-review">Chapter 1: Machine Learning Review</h1>
@@ -95,7 +91,7 @@ foreignObject {overflow:visible}
 <p>Supervised learning encompasses algorithms for function approximation. Given a dataset \(X\) and a function \(f\) that takes elements of the dataset and produces output \(y = f(x)\), learn a function \(h\) such that \(h(x) \approx f(x)\).</p>
 
 <figure class="image">
-  <img src="figs/mnist_digits.png" alt="Examples of MNIST digits. A 10x16 grid of handwritten digits, each row is a different digit 0-9." data-attribution="By Josef Steppan - Own work, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=64810040" />
+  <img src="../figs/mnist_digits.png" alt="Examples of MNIST digits. A 10x16 grid of handwritten digits, each row is a different digit 0-9." data-attribution="By Josef Steppan - Own work, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=64810040" />
   <figcaption>Examples digits from the MNIST dataset, 28x28 pixel images of handwritten digits 0-9. MNIST is a common benchmark for computer vision tasks although it is a fairly easy to attain high accuracies.</figcaption>
 </figure>
 
@@ -158,7 +154,7 @@ foreignObject {overflow:visible}
 <p>K-means clustering can be a useful tool for analyzing data sets, discovering patterns, and leveraging those patterns to accomplish some task. For example, k-means clustering on the color values of pixels in an image separates pixels into clusters based on visual similarity, giving a segmentation mask that groups visually similar elements. These elements may correspond to objects or continuous structures.</p>
 
 <figure class="image">
-  <img src="figs/kmeans.png" alt="Example of k-means clustering on image pixels by color. K = 2. On the left, an image of a rose. On the right, a two color image where the pink of the rose has been segmented as a separate group from the green of the background." data-attribution="" />
+  <img src="../figs/kmeans.png" alt="Example of k-means clustering on image pixels by color. K = 2. On the left, an image of a rose. On the right, a two color image where the pink of the rose has been segmented as a separate group from the green of the background." data-attribution="" />
   <figcaption>K-means clustering on pixels by \(L_2\) distance with \(K=2\).</figcaption>
 </figure>
 
@@ -275,7 +271,7 @@ Weather Prediction Notation:
 <h4 id="convexity">Convexity</h4>
 
 <figure class="image">
-  <img src="figs/convexity.png" alt="Graph of a convex function vs a non-convex function. On the left a convex function that is cup-shaped. The bottom of the curve is labelled 'Global Minimum'. On the right a non convex function that dips down, rises back up, dips partially back down, levels out, then dips further down, then back up. The first dip is labelled 'Local Minimum'. The leveled out portion is labelled 'Saddle Point'. The final dip down is labelled 'Global Minimum'" data-attribution="" />
+  <img src="../figs/convexity.png" alt="Graph of a convex function vs a non-convex function. On the left a convex function that is cup-shaped. The bottom of the curve is labelled 'Global Minimum'. On the right a non convex function that dips down, rises back up, dips partially back down, levels out, then dips further down, then back up. The first dip is labelled 'Local Minimum'. The leveled out portion is labelled 'Saddle Point'. The final dip down is labelled 'Global Minimum'" data-attribution="" />
   <figcaption>Any two points on the graph of a convex function can be connected with a line and the line will lie above the graph. Any local minimum of a convex function is the global minimum while non-convex functions can have non-global local minimum and saddle points.</figcaption>
 </figure>
 
@@ -545,7 +541,7 @@ e^{-x} &amp;= 2x \\
 \[\Pr( \mathrm{label} | x) = f(w \cdot x) = f(\sum_i w_i x_i)\]
 
 <figure class="image">
-  <img src="figs/classifierex.png" alt="A plot of the example data with a dividing line at y = x. Points above the line are positive exmaples, points below are negative. An unlabelled point at (4,5) is shown." data-attribution="" />
+  <img src="../figs/classifierex.png" alt="A plot of the example data with a dividing line at y = x. Points above the line are positive exmaples, points below are negative. An unlabelled point at (4,5) is shown." data-attribution="" />
   <figcaption>Linear classification on the exmaple dataset. The new point lies above the line thus is labelled as a positive example.</figcaption>
 </figure>
 
@@ -655,6 +651,43 @@ b &amp;= b - \eta (\sigma(w \cdot x + b) - y)\\
 
 <p>Cool cool cool. Stochastic gradient descent uses random sampling to get a <strong>noisy</strong> estimate of the gradient. However, because we sample randomly the estimate is <strong>unbiased</strong>, i.e. the errors will average out over time. Thus we can just make smaller updates to our parameters and trust that we will eventually get to the right place (or learn a bunch of math and prove it!).</p>
 
+
+
+
+<script>
+mermaid.initialize({
+    startOnLoad:false,
+    cloneCssStyles: false,
+    flowchart:{
+        curve:'basis',
+        htmlLabels:true,
+    },
+    theme: 'default',
+    themeVariables:{
+        edgeLabelBackground:'#fff',
+    },
+});
+
+window.onload = function(){
+            mermaid.init();
+
+            window.MathJax = {
+              tex: {
+                macros: {
+                  d: "{\\nabla}",
+                }
+              }
+            };
+
+            (function () {
+              var script = document.createElement('script');
+              script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+              script.async = true;
+              document.head.appendChild(script);
+            })();
+    
+};
+</script>
 
   </body>
 </html>
