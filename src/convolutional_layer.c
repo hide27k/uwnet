@@ -67,10 +67,8 @@ matrix im2col(image im, int size, int stride)
                 int ic = offw + k * stride;
                 int index = (i * outh + j) * outw + k;
 
-                if (size > 2) {
-                    ir--;
-                    ic--;
-                }
+                ir -= (size - 1) / 2;
+                ic -= (size - 1) / 2;
 
                 if (ir < 0 || ic < 0 ||
                     ir >= im.h || ic >= im.w) {
@@ -112,10 +110,8 @@ image col2im(int width, int height, int channels, matrix col, int size, int stri
                 int index = (i * outh + j) * outw + k;
                 float val = col.data[index];
 
-                if (size > 2) {
-                    ir--;
-                    ic--;
-                }
+                ir -= (size - 1) / 2;
+                ic -= (size - 1) / 2;
 
                 if(ic >= 0 && ic < im.w && ir >= 0 && ir < im.h){
                     im.data[ic + im.w * (ir + im.h * c)] += val;
@@ -218,9 +214,14 @@ matrix backward_convolutional_layer(layer l, matrix dy)
 void update_convolutional_layer(layer l, float rate, float momentum, float decay)
 {
     // TODO: 5.3
-    axpy_matrix(-decay, l.w, l.dw);
-    axpy_matrix(rate, l.dw, l.w);
+    axpy_matrix(decay, l.w, l.dw);
+    axpy_matrix(-rate, l.dw, l.w);
     scal_matrix(momentum, l.dw);
+
+    // Do the same for biases as well but no need to use weight decay on biases
+
+    axpy_matrix(-rate, l.db, l.b);
+    scal_matrix(momentum, l.db);
 }
 
 // Make a new convolutional layer
