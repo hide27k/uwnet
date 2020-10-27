@@ -22,7 +22,25 @@ matrix forward_maxpool_layer(layer l, matrix in)
 
     // TODO: 6.1 - iterate over the input and fill in the output with max values
 
-
+    for (int i = 0; i < in.rows; i += 1) {
+            int outcol = 0;
+            for (int c = 0; c < l.channels; c++)
+                for (int y = 0; y < l.height; y += l.stride)
+                    for (int x = 0; x < l.width; x += l.stride) {
+                        float max = -1.e8f;
+                        for (int fy = - (l.size - 1) / 2; fy < -(l.size - 1) / 2 + l.size; fy++) {
+                                for (int fx = - (l.size - 1) / 2; fx < -(l.size - 1) / 2 + l.size; fx++){
+                                        float num = 0.0f;
+                                        if (y + fy >= 0 && y + fy < l.height && x + fx < l.width && x + fx>= 0)
+                                                num = in.data[i * in.cols + c * l.height * l.width
+                                                        + (y + fy) * l.width + (x + fx)];
+                                         max = max < num ? num : max;
+                                }
+                        }
+                        out.data[i * out.cols + outcol] = max;
+                        outcol++;
+                    }
+    }
 
     return out;
 }
@@ -41,8 +59,30 @@ matrix backward_maxpool_layer(layer l, matrix dy)
     // corresponding delta with the delta from the output. This should be
     // similar to the forward method in structure.
 
-
-
+    for (int i = 0; i < in.rows; i += 1) {
+            int outcol = 0;
+            for (int c = 0; c < l.channels; c++)
+                for (int y = 0; y < l.height; y += l.stride)
+                    for (int x = 0; x < l.width; x += l.stride) {
+                        float max = -1.e8f;
+                        int dx_i = -1;
+                        for (int fy = - (l.size - 1) / 2; fy < -(l.size - 1) / 2 + l.size; fy++) {
+                                for (int fx = - (l.size - 1) / 2; fx < -(l.size - 1) / 2 + l.size; fx++){
+                                        float num = 0.0f;
+                                        if (y + fy >= 0 && y + fy < l.height && x + fx < l.width && x + fx>= 0) {
+                                                int temp = i * in.cols + c * l.height * l.width
+                                                        + (y + fy) * l.width + (x + fx);
+                                                num = in.data[temp];
+                                                dx_i = max < num ? temp : dx_i;
+                                        }
+                                         max = max < num ? num : max;
+                                }
+                        }
+                        if (dx_i != -1)
+                                dx.data[dx_i] += dy.data[i * dy.cols + outcol];
+                        outcol++;
+                    }
+    }
     return dx;
 }
 
