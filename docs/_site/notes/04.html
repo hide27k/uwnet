@@ -5,7 +5,8 @@
     <title>Deep Learning - 04 - Convolutional Neural Networks</title>
     <style>
         foreignObject {overflow:visible}
-        img {max-width:100%}
+        img {max-width:100%;
+        vertical-align:middle;}
         /*figure {max-width:100%}*/
         .small {font-size:70%}
         .large {font-size:130%}
@@ -145,7 +146,106 @@
 1 &amp; 1 &amp; 1 \\
 \end{bmatrix}\]
 
-<p>These fil</p>
+<h4 id="output-of-high-pass-filter-on-image">Output of High-Pass Filter on Image</h4>
+
+<p><img src="../figs/dog.jpg" alt="An image of a dog on a porch with a bike, a car in the background" /> \(*\begin{bmatrix}
+-1 &amp; -1 &amp; -1 \\
+-1 &amp;  8 &amp; -1 \\
+-1 &amp; -1 &amp; -1 \\
+\end{bmatrix} =\)
+<img src="../figs/dog-highpass.jpg" alt="A mostly black image with lines in the original image in white" /></p>
+
+<h4 id="output-of-low-pass-filter-on-image">Output of Low-Pass Filter on Image</h4>
+
+<p><img src="../figs/dog.jpg" alt="An image of a dog on a porch with a bike, a car in the background" /> \(* \frac{1}{9}\begin{bmatrix}
+1 &amp; 1 &amp; 1 \\
+1 &amp; 1 &amp; 1 \\
+1 &amp; 1 &amp; 1 \\
+\end{bmatrix} =\)
+<img src="../figs/dog-box7.jpg" alt="A blurry version of the original image" /></p>
+
+<h4 id="sobel-filters">Sobel Filters</h4>
+
+<p>Sobel filters are convolutional filters designed to take the (approximate) derivative of an image in the x and y dimension.</p>
+
+\[G_x = \begin{bmatrix}
+-1 &amp;  0 &amp;  1 \\
+-2 &amp;  0 &amp;  2 \\
+-1 &amp;  0 &amp;  1 \\
+\end{bmatrix} =\]
+
+\[G_y = \begin{bmatrix}
+-1 &amp; -2 &amp; -1 \\
+ 0 &amp;  0 &amp;  0 \\
+ 1 &amp;  2 &amp;  1 \\
+\end{bmatrix} =\]
+
+<p>Using these filters we can do things like find high rates of change in the x-dimension (vertical lines), y-dimension (horizontal lines), or calculate the magnitude and direction of all gradients (lines) in the image.</p>
+
+<p><img src="../figs/dog.jpg" alt="An image of a dog on a porch with a bike, a car in the background" /> \(* \begin{bmatrix}
+-1 &amp;  0 &amp;  1 \\
+-2 &amp;  0 &amp;  2 \\
+-1 &amp;  0 &amp;  1 \\
+\end{bmatrix} =\)
+<img src="../figs/dog-dx.jpg" alt="A mostly black image with vertical lines in the original image drawn in white" /></p>
+
+<p><img src="../figs/dog.jpg" alt="An image of a dog on a porch with a bike, a car in the background" /> \(* \begin{bmatrix}
+-1 &amp; -2 &amp; -1 \\
+ 0 &amp;  0 &amp;  0 \\
+ 1 &amp;  2 &amp;  1 \\
+\end{bmatrix} =\)
+<img src="../figs/dog-dy.jpg" alt="A mostly black image with horizontal lines in the original image drawn in white" /></p>
+
+<p>\(\arctan(\frac{dy}{dx}) =\)<img src="../figs/dog-color.jpg" alt="A mostly black image lines in the original image drawn in color, the color depending on the angle of the edge in the original image" /></p>
+
+<h2 id="convolutions-as-feature-extraction">Convolutions as Feature Extraction</h2>
+
+<p>Hopefully you are now convinced that convolutional filters are effective at extracting useful information from local patches in signal data (such as images). Though they are powerful feature extractors, they are relatively simple, we are just doing a weighted sum of the input with a filter.</p>
+
+<p>Convolutions, especially filters like sobel filters, were commonly used as a first step in feature extraction before deep neural networks. The features they found would be aggregated in local areas to produce descriptors like HOG features.</p>
+
+<p>But now we want to bake feature extraction into our neural network. Fully connected layers were too dense but convolutions are spare operations (each pixel in the output is only connected to a local neighborhood in the input) and are computationally fairly cheap (like connected layers we are just doing a weighted sum to compute convolutions).</p>
+
+<p>So instead of using pre-defined convolutional filters we can implement neural network layers that perform convolution operations. The weights in these layers can be updated via error backpropagation so we learn filters that work well for the particular task.</p>
+
+<h2 id="convolutional-layer">Convolutional Layer</h2>
+
+<ul>
+  <li>Input: An image</li>
+  <li>Processing: Convolution with multiple filters</li>
+  <li>Output: An image/feature map of extracted features</li>
+</ul>
+
+<p>Parameters:</p>
+<ul>
+  <li>number of filters: each filter produces a feature map in the output, the number of filters determines the number of channels in the output</li>
+  <li>filter size: spatial dimensions of the filters</li>
+  <li>stride: how far the filter moves with every application</li>
+</ul>
+
+<h3 id="number-of-filters">Number of Filters</h3>
+
+<p>Each filter processes the input image or feature map and produces a single channel for the output feature map. More filters mean the layer can specialize and extract more specific features. However it also means the layer take longer to process.</p>
+
+<p>In general you need fewer features in the early layers because there aren’t very many interesting features to look for. For instance in the first layer there are only so many orientations of edges and color blobs to look for. Adding more filters can just lead to redundancy without being productive.</p>
+
+<p>Later layers tend to have more filters as the spatial dimensions of the image shrinks. There’s less information in the spatial dimension but more semantic information and more channels to process and look for patterns in.</p>
+
+<h3 id="filter-size">Filter Size</h3>
+
+<p>Larger filters can process more information in the spatial dimensions but take longer to process. Smaller filters are faster. In general filters are square and usually have odd parity in size. Only a few filters are commonly used although there is room to explore other options. The common ones are:</p>
+
+<ul>
+  <li>\(3 \times 3\) filter: the most common filter size, it can process information in the spatial dimension but also is very efficient and fast</li>
+  <li>\(1 \times 1\) filter: second most common size, it doesn’t process spatial information but does find patterns across channels and is very fast</li>
+  <li>\(7 \times 7\) filter: often larger size filters are used in the first layer where the cost is much less since there are only 3 channels in the input</li>
+  <li>\(2 \times 2\) filter, stride of 2: not very common but one alternative to maxpooling layers for downsampling, although \(3 \times 3\) stride 2 convolutions are more common</li>
+</ul>
+
+<h3 id="stride">Stride</h3>
+
+<p>Typically convolutional filters are applied at every pixel location.</p>
+
 
 
 
