@@ -7,33 +7,7 @@
         foreignObject {overflow:visible}
         img {max-width:100%;
         vertical-align:middle;}
-        /*figure {max-width:100%}*/
-        .small {font-size:70%}
-        .large {font-size:130%}
-        /*.mermaidsvg {max-width:40%;}*/
-        .remark-container figure{
-            margin:0;
-        }
 
-        .col30{float:left; width:30%}
-        .col40{float:left; width:40%}
-        .col50{float:left; width:50%}
-        .col60{float:left; width:60%}
-        .col70{float:left; width:70%}
-
-
-
-        /*@import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
-        @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
-        @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
-
-        body { font-family: 'Droid Serif'; }
-        h1, h2, h3 {
-        font-family: 'Yanone Kaffeesatz';
-        font-weight: normal;
-        }
-        .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
-        */
     </style>
 
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -42,7 +16,54 @@
 
   </head>
   <body>
-    <textarea id="source">
+            <style>
+        .remark-code{
+            font-size:inherit;
+        }
+        .remark-slide-number{
+            bottom:20px;
+            right:36px;
+            font-size:18px;
+        }
+        .footnote{
+            position:absolute;
+            bottom:20px;
+            font-size:18px;
+        }
+        .remark-slide-content{
+            background-image:url('../figs/bg.png');
+            background-position:top left;
+            background-size: contain;
+            padding:1em 2em 1em 2em;
+            overflow:hidden;
+            font-size:24px;
+        }
+        h1 {
+            margin-block-start: .1em;
+        }
+        img {
+            max-width:100%;
+            vertical-align:middle;
+        }
+        /*figure {max-width:100%}*/
+        .small {font-size:18px}
+        .big {font-size:32px;}
+        /*.mermaidsvg {max-width:40%;}*/
+        .remark-slide-content figure{
+            margin:0;
+        }
+
+        .col30{float:left; width:30%}
+        .col40{float:left; width:40%}
+        .col50{float:left; width:50%}
+        .col60{float:left; width:60%}
+        .col70{float:left; width:70%}
+</style>
+
+<textarea id="source">
+background-image: url('../figs/title.png')
+
+---
 class: center, middle
 
 # Chapter 9 - Recurrent Neural Networks
@@ -62,20 +83,23 @@ class: center, middle
 
 ---
 
-# Natural language processing using neural networks
+# Language processing using neural networks
 
 - Images are static, language has a component of time
 - Characters/words appear in sequence, need to read previous words to understand subsequent ones (like frames in a video)
 - How do we process time-series data using neural networks?
 
 ---
-
-class: center, middle
-# A long time ago in a \_\_\_\_\_\_ far, far away...
+class: center, middle, big
+```
+A long time ago in a ______ far, far away...
+```
 
 ---
-class: center, middle
-# A long time ago in a galaxy far, far away...
+class: center, middle, big
+```
+A long time ago in a galaxy far, far away...
+```
 
 ---
 # Neural networks + language
@@ -316,6 +340,8 @@ graph LR
 <figcaption>Naive network architecture for processing language data. <a target="_blank" href="../chartsrc?src=%0Agraph+LR%0A%0A++++s1%28A%29+--%3E+%7Cencode%7C+in1%5BInput%5D%0A++++subgraph+Time+Step+1%0A++++in1+--%3E+hidden1%5BHidden+Layer%5D%0A++++hidden1+--%3E+out1%5BOutput%5D%0A++++end%0A++++out1+--%3E+%7Cdecode%7C+outs1%28long%29%0A%0A++++s2%28long%29+--%3E+%7Cencode%7C+in2%5BInput%5D%0A++++subgraph+Time+Step+2%0A++++in2+--%3E+hidden2%5BHidden+Layer%5D%0A++++hidden2+--%3E+out2%5BOutput%5D%0A++++end%0A++++out2+--%3E+%7Cdecode%7C+outs2%28time%29%0A++++hidden1%5BHidden+Layer%5D+--%3E+hidden2%5BHidden+Layer%5D%0A%0A++++s3%28time%29+--%3E+%7Cencode%7C+in3%5BInput%5D%0A++++subgraph+Time+Step+3%0A++++in3+--%3E+hidden3%5BHidden+Layer%5D%0A++++hidden3+--%3E+out3%5BOutput%5D%0A++++end%0A++++out3+--%3E+%7Cdecode%7C+outs3%28ago%29%0A++++hidden2%5BHidden+Layer%5D+--%3E+hidden3%5BHidden+Layer%5D%0A%0A++++s4%28ago%29+--%3E+%7Cencode%7C+in4%5BInput%5D%0A++++subgraph+Time+Step+4%0A++++in4+--%3E+hidden4%5BHidden+Layer%5D%0A++++hidden4+--%3E+out4%5BOutput%5D%0A++++end%0A++++out4+--%3E+%7Cdecode%7C+outs4%28in%29%0A++++hidden3%5BHidden+Layer%5D+--%3E+hidden4%5BHidden+Layer%5D%0A%0A%0A%0A">(source)</a></figcaption>
 </figure>
 
+
+.footnote[https://arxiv.org/pdf/1406.1078v3.pdf]
 
 ---
 
