@@ -144,7 +144,8 @@ matrix forward_convolutional_layer(layer l, matrix in)
         image example = float_to_image(in.data + i*in.cols, l.width, l.height, l.channels);
         matrix x = im2col(example, l.size, l.stride);
         matrix wx = matmul(l.w, x);
-        for(j = 0; j < wx.rows*wx.cols; ++j){
+        printf("i: %d,  l.w: %d x %d, x: %d x %d\n", i, l.w.rows, l.w.cols, x.rows, x.cols); 
+	for(j = 0; j < wx.rows*wx.cols; ++j){
             out.data[i*out.cols + j] = wx.data[j];
         }
         free_matrix(x);
@@ -249,4 +250,3 @@ layer make_convolutional_layer(int w, int h, int c, int filters, int size, int s
     l.update   = update_convolutional_layer;
     return l;
 }
-
