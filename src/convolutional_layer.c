@@ -144,7 +144,7 @@ matrix forward_convolutional_layer(layer l, matrix in)
         image example = float_to_image(in.data + i*in.cols, l.width, l.height, l.channels);
         matrix x = im2col(example, l.size, l.stride);
         matrix wx = matmul(l.w, x);
-        printf("i: %d,  l.w: %d x %d, x: %d x %d", i, l.w.rows, l.w.cols, x.rows, x.cols); 
+        printf("i: %d,  l.w: %d x %d, x: %d x %d\n", i, l.w.rows, l.w.cols, x.rows, x.cols); 
 	for(j = 0; j < wx.rows*wx.cols; ++j){
             out.data[i*out.cols + j] = wx.data[j];
         }
