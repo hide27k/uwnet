@@ -34,7 +34,7 @@ These are the forward propagation equations from the [original paper](https://ar
 
 Fill in the section to compute the variance of a feature map. As in the `mean` computation, we will compute variance for each filter. We need the previously computed `mean` for this computation so it is passed in as a parameter. Remember, variance is just the average squared difference of an element from the mean:
 
-![variance equation](https://wikimedia.org/api/rest_v1/media/math/render/svg/0c5c6e7bbd52e69c29e2d5cfe21989313aba55d4)
+![variance equation: Var(X) = 1/n \sum_{x=1}^{n} (x_i - \mu)^2](https://wikimedia.org/api/rest_v1/media/math/render/svg/0c5c6e7bbd52e69c29e2d5cfe21989313aba55d4)
 
 Don't take the square root just yet, that would be standard deviation!
 
