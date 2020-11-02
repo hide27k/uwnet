@@ -88,7 +88,7 @@ In class we learned about annealing your learning rate to get better convergence
 
 ## PyTorch Section ##
 
-Upload `homework2_colab.ipynb` to Colab and train a neural language model.
+Upload `hw2.ipynb` to Colab and train a neural language model.
 
 ## Turn it in ##
 
@@ -98,5 +98,5 @@ First run the `collate_hw2.sh` script by running:
     
 This will create the file `hw2.tar.gz` in your directory with all the code you need to submit. The command will check to see that your files have changed relative to the version stored in the `git` repository. If it hasn't changed, figure out why, maybe you need to download your ipynb from google?
 
-Submit `submit.tar.gz` in the file upload field for Homework 2 on Canvas.
+Submit `hw2.tar.gz` in the file upload field for Homework 2 on Canvas.
 
