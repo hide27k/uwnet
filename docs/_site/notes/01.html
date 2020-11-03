@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Deep Learning - 01 - Machine Learning Review</title>
+    <title>01 - Machine Learning Review</title>
     <style>
         foreignObject {overflow:visible}
         img {max-width:100%;
@@ -625,6 +625,38 @@ b &amp;= b - \eta (\sigma(w \cdot x + b) - y)\\
 \end{align}\]
 
 <p>Cool cool cool. Stochastic gradient descent uses random sampling to get a <strong>noisy</strong> estimate of the gradient. However, because we sample randomly the estimate is <strong>unbiased</strong>, i.e. the errors will average out over time. Thus we can just make smaller updates to our parameters and trust that we will eventually get to the right place (or learn a bunch of math and prove it!).</p>
+
+<h2 id="solving-any-problem-with-machine-learning">Solving Any Problem With Machine Learning</h2>
+
+<p>Here’s how you solve any problem with machine learning:</p>
+
+<ol>
+  <li>Get some <strong>data</strong>: very important, probably need lots of data and labels</li>
+  <li>Pick a <strong>model</strong>: pick a good one, preferably one that encodes any structure present in your data</li>
+  <li>Design the <strong>loss function</strong>: should tell you how bad your model is</li>
+  <li>Initialize model <strong>parameters</strong>: randomly? zeros? depends on the model</li>
+  <li><strong>Optimize!</strong></li>
+</ol>
+
+<p>Using gradient descent (or stochastic gradient descent) your goal is to optimize your loss function to find the best parameters for your model. You can think of the data, model, and labels as constants and your loss function takes as input model parameters. Gradient descent shows you how to change your parameters to minimize your loss:</p>
+
+<figure class="chart">
+<div class="mermaidsvg">
+<div class="mermaid">
+
+graph LR
+    w["model parameters <br /> (weights)"] --&gt; model
+    subgraph Loss Function
+    model --&gt; | predictions | error
+    data --&gt; | labels | error
+    data --&gt; | features | model
+    end
+    error --&gt; loss
+
+</div>
+</div>
+<figcaption>The loss function takes as input the parameters to the model. It uses those parameters to calculate predictions based on features from the data. It compares these predictions to the labels from that data and outputs the calculated loss. <a target="_blank" href="../chartsrc?src=%0Agraph+LR%0A++++w%5B%22model+parameters+%3Cbr+%2F%3E+%28weights%29%22%5D+--%3E+model%0A++++subgraph+Loss+Function%0A++++model+--%3E+%7C+predictions+%7C+error%0A++++data+--%3E+%7C+labels+%7C+error%0A++++data+--%3E+%7C+features+%7C+model%0A++++end%0A++++error+--%3E+loss%0A">(source)</a></figcaption>
+</figure>
 
 
 
