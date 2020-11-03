@@ -43,6 +43,19 @@ layout: default
         .col50{float:left; width:50%}
         .col60{float:left; width:60%}
         .col70{float:left; width:70%}
+        .box{
+            position:relative;
+            border:4px solid black;
+            padding:.2em;
+        }
+        .box .title{
+            position: absolute;
+            left:.5em;
+            top: -.9em;
+            border: 4px solid black;
+            padding:0em .2em;
+            background-color:white;
+        }
 </style>
 
 <textarea id="source">
@@ -55,8 +68,13 @@ layout: default
         tex: {
             macros: {
                 d: "{\\nabla}",
+                t: "\\tilde",
+                x: "{\\times}",
             }
-        }
+        },
+        options: {
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'annotation', 'annotation-xml']
+        },
     };
 </script>
 <script type="text/javascript" id="MathJax-script" async
@@ -93,6 +111,7 @@ window.onload = function(){
             mermaid.init(undefined, diagram);
         }
         slide = document.querySelectorAll('.remark-visible');
+        console.log(slide);
         MathJax.typeset(slide);
     }
     slideshow.on('afterShowSlide', initSlide);
