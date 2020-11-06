@@ -3,6 +3,8 @@
 #include <assert.h>
 #include "uwnet.h"
 
+float eps = 0.00001f;
+
 // Take mean of matrix x over rows and spatial dimension
 // matrix x: matrix with data
 // int groups: number of distinct means to take, usually equal to # outputs
@@ -30,6 +32,16 @@ matrix variance(matrix x, matrix m, int groups)
 {
     matrix v = make_matrix(1, groups);
     // TODO: 7.1 - Calculate variance
+    int n = x.cols / groups;
+    int i, j;
+    for(i = 0; i < x.rows; ++i){
+        for(j = 0; j < x.cols; ++j){
+            v.data[j/n] += (x.data[i*x.cols + j] - m.data[j/n]) * (x.data[i*x.cols + j] - m.data[j/n]);
+        }
+    }
+    for(i = 0; i < m.cols; ++i){
+        v.data[i] = v.data[i] / x.rows / n;
+    }
     return v;
 }
 
@@ -39,6 +51,16 @@ matrix normalize(matrix x, matrix m, matrix v, int groups)
 {
     matrix norm = make_matrix(x.rows, x.cols);
     // TODO: 7.2 - Normalize x
+    int n = x.cols / groups;
+    int i, j;
+    for (i = 0; i < x.rows; ++i) {
+        for (j = 0; j < x.cols; ++j) {
+            float mean = m.data[j/n];
+            float variance = v.data[j/n];
+            float data = x.data[i*x.cols + j];
+            norm.data[i*x.cols + j] = (data - mean) / sqrtf(variance + eps);
+        }
+    }
     return norm;
 }
 
@@ -79,6 +101,13 @@ matrix delta_mean(matrix d, matrix v)
     int groups = v.cols;
     matrix dm = make_matrix(1, groups);
     // TODO 7.3 - Calculate dL/dm
+    int n = d.cols / groups;
+    int i, j;
+    for(i = 0; i < d.rows; i++) {
+        for(j = 0; j < d.cols; j++) {
+            dm.data[j/n] += d.data[i*d.cols + j] * (-1.0/(sqrtf(v.data[j/n]) + eps));
+        }
+    }
     return dm;
 }
 
@@ -88,6 +117,16 @@ matrix delta_variance(matrix d, matrix x, matrix m, matrix v)
     int groups = m.cols;
     matrix dv = make_matrix(1, groups);
     // TODO 7.4 - Calculate dL/dv
+    int n = d.cols / groups;
+    int i, j;
+    for(i = 0; i < d.rows; i++) {
+        for(j = 0; j < d.cols; j++) {
+            dv.data[j/n] += d.data[i*d.cols + j] 
+                            * (x.data[i*d.cols + j] - m.data[j/n])
+                            * -0.5
+                            * powf(v.data[j/n] + eps, -1.5);
+        }
+    }
     return dv;
 }
 
@@ -95,6 +134,15 @@ matrix delta_batch_norm(matrix d, matrix dm, matrix dv, matrix m, matrix v, matr
 {
     matrix dx = make_matrix(d.rows, d.cols);
     // TODO 7.5 - Calculate dL/dx
+    int n = dx.cols / m.cols;
+    int i, j;
+    for(i = 0; i < d.rows; i++) {
+        for(j = 0; j < d.cols; j++) {
+            dx.data[i*d.cols + j] = d.data[i*d.cols + j] * (1.0 / (sqrtf(v.data[j/n] + eps))) +
+                                    dv.data[j/n] * (2.0 * (x.data[i*d.cols + j] - m.data[j/n]) / x.rows / n) +
+                                        dm.data[j/n] * (1.0 / x.rows / n);
+        }
+    }
     return dx;
 }
 
