@@ -17,6 +17,23 @@
   </head>
   <body>
             <style>
+        img{
+            max-height:500px;
+        }
+        figure{
+            padding:.5em;
+            border:1px solid black;
+            position:relative
+        }
+        figcaption{
+            position: absolute;
+            left:.5em;
+            top: -.9em;
+            border: 1px solid black;
+            padding:0em .2em;
+            background-color:white;
+        }
+
         .remark-code{
             font-size:inherit;
         }
@@ -26,9 +43,13 @@
             font-size:18px;
         }
         .footnote{
+            border:4px solid black;
             position:absolute;
-            bottom:20px;
+            left:35px;
+            bottom:2px;
             font-size:18px;
+            background-color:#fff;
+            padding:.2em;
         }
         .remark-slide-content{
             background-image:url('../figs/bg.png');
@@ -45,6 +66,9 @@
             max-width:100%;
             vertical-align:middle;
         }
+        ul {
+            margin-block-start:0em;
+        }
         /*figure {max-width:100%}*/
         .small {font-size:18px}
         .big {font-size:32px;}
@@ -58,6 +82,18 @@
         .col50{float:left; width:50%}
         .col60{float:left; width:60%}
         .col70{float:left; width:70%}
+        .height100 img{height:100px;}
+        .height200 img{height:200px;}
+        .height300 img{height:300px;}
+        .height400 img{height:400px;}
+        .height450 img{height:450px;}
+        .height500 img{height:500px;}
+        .height100 svg{height:100px;}
+        .height200 svg{height:200px;}
+        .height300 svg{height:300px;}
+        .height400 svg{height:400px;}
+        .height450 svg{height:450px;}
+        .height500 svg{height:500px;}
         .box{
             position:relative;
             border:4px solid black;
@@ -522,6 +558,7 @@ window.onload = function(){
         startOnLoad:false,
         cloneCssStyles: false,
         flowchart:{
+            //useMaxWidth:false,
             curve:'basis',
             htmlLabels:true,
         },
